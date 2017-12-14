@@ -1,0 +1,62 @@
+<form id="fm1" name="form1" action="index.php?app=b2c&ctl=admin_member&act=confirm_member" method="POST">
+    <input type="hidden" name="member_id" value="<{$memInfo.account.member_id}>" />
+    <input type="hidden" name="op_id" value="<{$op_id}>" />
+    <input type="hidden" name="confirm" value="confirmed" />
+    <div class="tableform">
+        <h3>会员审核</h3>
+        <div class="division">
+            <h5>基本信息</h5>
+            <table border="0" cellspacing="0" cellpadding="0" class="gridlist">
+                <thead>
+                <tr>
+                    <td width="20%" align="right" nowrap="nowrap">用户姓名:</td>
+                    <td width="20%" align="left" ><{$memInfo.account.login_account}></td>
+                    <td align="right" nowrap="nowrap">E-mail:</td>
+                    <td align="left"><{$memInfo.members.email}></td>
+                </tr>
+                <tr>
+                    <td align="right" nowrap="nowrap">手机:</td>
+                    <td align="left" ><{$memInfo.account.mobile}></td>
+                    <td align="right" nowrap="nowrap">注册日期:</td>
+                    <td align="left"><{$memInfo.members.regtime|cdate:FDATE}></td>
+                </tr>
+                <tr>
+                    <td align="right">注册IP:</td>
+                    <td align="left" ><{$memInfo.members.reg_ip}></td>
+                    <td colspan="2" ></td>
+                </tr>
+                </thead>
+            </table>
+        </div>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+            <tr>
+                <td width="15%" align="right">备注：</td>
+                <td align="left"><input type="text" name="memo" value=""></td>
+            </tr>
+            <tr>
+                <td align="right">经办人:</td>
+                <td align="left"><{$operator}></td>
+            </tr>
+        </table>
+        <div id="cc" class="noprint table-action"><{button type="submit" class="btn" id="member-check-btn" label="审 核"}> &nbsp; <{button type="button" class="btn" id="return-btn" label="取 消" onclick="javascript:void(window.close());"}></div>
+    </div>
+</form>
+<script>
+    $('fm1').store('target',{
+        onRequest:function(){
+            $('member-check-btn').set('disabled', 'true');
+        },
+        onComplete:function(jsontext){
+            var json = Json.evaluate(jsontext);
+
+            if (typeof(json.error) != 'undefined'){
+                $('member-check-btn').set('disabled', '');
+            }else{
+                $('member-check-btn').set('disabled', 'true');
+                if(opener.finderGroup['<{$env.get.finder_id}>']) opener.finderGroup['<{$env.get.finder_id}>'].refresh.delay(100,opener.finderGroup['<{$env.get.finder_id}>']);
+                setTimeout('window.close()',200);
+            }
+        }
+    });
+
+</script>
